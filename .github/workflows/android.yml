@@ -18,11 +18,17 @@ jobs:
           # local.properties 파일을 생성하고 Google API 키를 설정
           echo "sdk.dir=/usr/local/lib/android/sdk" > local.properties
           echo "google.api.key=${{ secrets.GOOGLE_API_KEY }}" >> local.properties
-          
+
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '17'  # 사용할 Java 버전
+          distribution: 'adoptopenjdk'  # Java 배포판 지정 (AdoptOpenJDK를 예시로 사용)
+
+      - name: Install Android SDK dependencies
+        run: |
+          yes | sdkmanager --licenses
+          sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3" "tools"
 
       - name: Install dependencies and build
         run: ./gradlew build
