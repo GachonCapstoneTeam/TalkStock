@@ -18,14 +18,14 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:src="@drawable/종목명2"
+                android:src="@drawable/itemname2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
             </ImageView>
 
             <ImageView
                 android:layout_marginLeft="60dp"
-                android:src="@drawable/제목"
+                android:src="@drawable/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
@@ -33,7 +33,7 @@
 
             <ImageView
                 android:layout_marginLeft="60dp"
-                android:src="@drawable/증권사"
+                android:src="@drawable/company"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
             </ImageView>
@@ -47,6 +47,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/rectangle15">
+
+            <TextView
+                android:id="@+id/audiocontent"
+                android:text="테스트입니다"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
 
 
@@ -63,13 +69,14 @@
             </ImageButton>
 
             <ImageButton
-                android:src="@drawable/Square"
+                android:src="@drawable/square"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
             </ImageButton>
 
             <ImageButton
-                android:src="@drawable/Pause"
+                android:id="@+id/PauseButton"
+                android:src="@drawable/pause"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
             </ImageButton>
