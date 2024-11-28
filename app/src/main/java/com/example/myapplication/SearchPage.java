@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -8,21 +9,24 @@ import android.widget.ImageButton;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class SearchPage extends AppCompatActivity {
-    ImageButton first;
+
+    ImageButton originalpagebutton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.search_page);
 
-        ImageButton first = findViewById(R.id.icon);
+        originalpagebutton = findViewById(R.id.originalpagebutton);
 
-        first.setOnClickListener(new View.OnClickListener() {
+        originalpagebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),)
+                Intent intent = new Intent(getApplicationContext(),OriginalPage.class);
+                startActivity(intent);
             }
         });
+
 
 
 
