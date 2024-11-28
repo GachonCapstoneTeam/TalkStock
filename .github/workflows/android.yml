@@ -22,8 +22,9 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
-          java-version: '17'  # 사용할 Java 버전
-          distribution: 'adoptopenjdk'  # Java 배포판 지정 (AdoptOpenJDK를 예시로 사용)
+          java-version: '17'           # 사용할 Java 버전
+          distribution: 'temurin'      # AdoptOpenJDK 대신 Temurin을 사용
+          java-package: jdk            # JDK를 설치
 
       - name: Install Android SDK dependencies
         run: |
