@@ -20,7 +20,7 @@ jobs:
           echo "google.api.key=${{ secrets.GOOGLE_API_KEY }}" >> local.properties
 
       - name: Set up Android SDK
-                sudo apt update
+          sudo apt update
           sudo apt install -y wget unzip
           wget https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip -P /tmp
           sudo unzip /tmp/commandlinetools-linux-7583922_latest.zip -d /usr/local/android-sdk
