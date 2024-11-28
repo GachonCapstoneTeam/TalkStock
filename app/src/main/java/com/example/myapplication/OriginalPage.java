@@ -49,7 +49,6 @@ public class OriginalPage extends AppCompatActivity {
     private ImageButton pausebutton;
     private final String API_KEY = BuildConfig.MY_KEY;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +56,9 @@ public class OriginalPage extends AppCompatActivity {
 
         audioContent = findViewById(R.id.audiocontent);
         pausebutton = findViewById(R.id.PauseButton);
+
+        // GET 요청으로 텍스트 가져오기
+        fetchTextFromServer();
 
         pausebutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,8 +68,54 @@ public class OriginalPage extends AppCompatActivity {
         });
     }
 
+    private void fetchTextFromServer() {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .url("http://10.0.2.2:8000/textload/originaltext/") // Django 서버 URL
+                .get()
+                .build();
+
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(() ->
+                        Toast.makeText(OriginalPage.this, "Failed to fetch text", Toast.LENGTH_SHORT).show()
+                );
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful() && response.body() != null) {
+                    String responseBody = response.body().string();
+
+                    try {
+                        // JSON 파싱
+                        JSONObject jsonObject = new JSONObject(responseBody);
+                        String originalText = jsonObject.getString("originaltext");
+                        Log.d("ServerResponse", responseBody);
+
+
+                        // UI 업데이트
+                        runOnUiThread(() -> audioContent.setText(originalText));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        runOnUiThread(() ->
+                                Toast.makeText(OriginalPage.this, "Error parsing JSON", Toast.LENGTH_SHORT).show()
+                        );
+                    }
+                } else {
+                    runOnUiThread(() ->
+                            Toast.makeText(OriginalPage.this, "Error fetching text", Toast.LENGTH_SHORT).show()
+                    );
+                }
+            }
+        });
+    }
+
     private void performTextToSpeech() {
         String text = audioContent.getText().toString();
+
         if (text.isEmpty()) {
             Toast.makeText(this, "Please enter text", Toast.LENGTH_SHORT).show();
             return;
@@ -92,7 +140,7 @@ public class OriginalPage extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> Toast.makeText(OriginalPage.this, "Request failed", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Toast.makeText(OriginalPage.this, "TTS Request failed", Toast.LENGTH_SHORT).show());
             }
 
             @Override
@@ -107,7 +155,7 @@ public class OriginalPage extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 } else {
-                    runOnUiThread(() -> Toast.makeText(OriginalPage.this, "Request failed", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(OriginalPage.this, "TTS Request failed", Toast.LENGTH_SHORT).show());
                 }
             }
         });
@@ -117,22 +165,18 @@ public class OriginalPage extends AppCompatActivity {
         byte[] decodedAudio = Base64.decode(base64Audio, Base64.DEFAULT);
 
         try {
-            // Save audio to a temporary file
             File tempAudioFile = File.createTempFile("tts_audio", ".mp3", getCacheDir());
             FileOutputStream fos = new FileOutputStream(tempAudioFile);
             fos.write(decodedAudio);
             fos.close();
 
-            // Set up the MediaPlayer to play the audio from the file
             MediaPlayer mediaPlayer = new MediaPlayer();
             mediaPlayer.setDataSource(tempAudioFile.getAbsolutePath());
             mediaPlayer.prepare();
             mediaPlayer.start();
 
-            // Display success message
             runOnUiThread(() -> Toast.makeText(OriginalPage.this, "Playing Audio", Toast.LENGTH_SHORT).show());
 
-            // Clean up file after playback
             mediaPlayer.setOnCompletionListener(mp -> {
                 mediaPlayer.release();
                 tempAudioFile.delete();
@@ -143,5 +187,4 @@ public class OriginalPage extends AppCompatActivity {
             runOnUiThread(() -> Toast.makeText(OriginalPage.this, "Error playing audio", Toast.LENGTH_SHORT).show());
         }
     }
-
 }
