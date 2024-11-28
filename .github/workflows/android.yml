@@ -18,19 +18,13 @@ jobs:
           # local.properties 파일을 생성하고 Google API 키를 설정
           echo "sdk.dir=/usr/local/lib/android/sdk" > local.properties
           echo "google.api.key=${{ secrets.GOOGLE_API_KEY }}" >> local.properties
-          # Android SDK 설치
-          mkdir -p $HOME/android-sdk
-          wget https://dl.google.com/android/repository/commandlinetools-linux-8092744_latest.zip -P $HOME/android-sdk
-          unzip $HOME/android-sdk/commandlinetools-linux-8092744_latest.zip -d $HOME/android-sdk
-          rm $HOME/android-sdk/commandlinetools-linux-8092744_latest.zip
-          
-          # SDK Manager 환경 변수 설정
-          export ANDROID_SDK_ROOT=$HOME/android-sdk
-          export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin
-          
-          # 필요한 SDK 구성 요소 설치
-          yes | sdkmanager --licenses
-          sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3" "tools"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android-sdk@v4
+        with:
+          sdk-version: '34'    # 원하는 SDK 버전
+          build-tools-version: '34.0.0'
+          components: "platform-tools,build-tools;30.0.3,platforms;android-34"
 
       - name: Set up Java
         uses: actions/setup-java@v4
