@@ -27,8 +27,6 @@ jobs:
           java-package: jdk            # JDK를 설치
 
       - name: Install Android SDK dependencies
-        run: |
-          sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3" "tools"
 
       - name: Install dependencies and build
         run: ./gradlew build
