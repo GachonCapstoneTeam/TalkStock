@@ -1,4 +1,4 @@
-name: Android CI
+name: Android CI with Docker
 
 on:
   push:
@@ -9,28 +9,22 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Android SDK
+      - name: Build Docker image
         run: |
-          # local.properties 파일을 생성하고 Google API 키를 설정
-          echo "sdk.dir=/usr/local/lib/android/sdk" > local.properties
-          echo "google.api.key=${{ secrets.GOOGLE_API_KEY }}" >> local.properties
+          docker build -t my-android-app .
 
-      - name: Set up Java
-        uses: actions/setup-java@v4
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
         with:
-          java-version: '17'           # 사용할 Java 버전
-          distribution: 'temurin'      # AdoptOpenJDK 대신 Temurin을 사용
-          java-package: jdk            # JDK를 설치
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Install Android SDK dependencies
-
-      - name: Install dependencies and build
-        run: ./gradlew build
-
-      - name: Run tests
-        run: ./gradlew test
-
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker tag my-android-app:latest ${{ secrets.DOCKER_USERNAME }}/my-android-app:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/my-android-app:latest
